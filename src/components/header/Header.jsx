@@ -1,19 +1,23 @@
-import "./header.css";
+import {
+  faBed,
+  faCalendarDays,
+  faCar,
+  faPerson,
+  faPlane,
+  faTaxi,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBed, faCalendar } from "@fortawesome/free-solid-svg-icons";
-import { faPlane } from "@fortawesome/free-solid-svg-icons";
-import { faCar } from "@fortawesome/free-solid-svg-icons";
-import { faTaxi } from "@fortawesome/free-solid-svg-icons";
-import { faCalendarDays } from "@fortawesome/free-solid-svg-icons";
+import "./header.css";
 import { DateRange } from "react-date-range";
 import { useState } from "react";
-import "react-date-range/dist/styles.css";
-import "react-date-range/dist/theme/default.css";
+import "react-date-range/dist/styles.css"; // main css file
+import "react-date-range/dist/theme/default.css"; // theme css file
 import { format } from "date-fns";
-import { faPerson } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom";
 
 const Header = ({ type }) => {
-  const [openDate, setOpenDate] = useState(false);
+  const [destination, setDestination] = useState("");
+   const [openDate, setOpenDate] = useState(false);
   const [date, setDate] = useState([
     {
       startDate: new Date(),
@@ -28,12 +32,18 @@ const Header = ({ type }) => {
     room: 1,
   });
 
+  const navigate = useNavigate();
   const handleOption = (name, operation) => {
     setOptions((prev) => {
       return {
         ...prev,
         [name]: operation === "i" ? options[name] + 1 : options[name] - 1,
       };
+    });
+  };
+  const handleSearch = () => {
+    navigate("/hotels", {
+      state: { date, options, destination },
     });
   };
   return (
@@ -70,10 +80,15 @@ const Header = ({ type }) => {
             <p className="headerDesc">Hello Get rewwards</p>
             <button className="headerBtn">Sign in / Register</button>
 
-            <div className="headerSearch">
+               <div className="headerSearch">
               <div className="headerSearchItem">
-                <FontAwesomeIcon icon={faPerson} className="headerIcon" />
-                <span className="headerSearchText">2 Hoang 1 Thu </span>
+                <FontAwesomeIcon icon={faBed} className="headerIcon" />
+                <input
+                  type="text"
+                  placeholder="Where are you going?"
+                  className="headerSearchInput"
+                  onChange={(e) => setDestination(e.target.value)}
+                />
               </div>
 
               <div className="headerSearchItem">
@@ -171,7 +186,7 @@ const Header = ({ type }) => {
               </div>
 
               <div className="headerSearchItem">
-                <button className="heaederBtn">Search</button>
+                <button className="heaederBtn" onClick={handleSearch}>Search</button>
               </div>
             </div>
           </>
