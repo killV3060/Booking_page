@@ -11,9 +11,11 @@ import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { format } from "date-fns";
 import { faPerson } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom";
 
 const Header = ({ type }) => {
   const [openDate, setOpenDate] = useState(false);
+  const [destination, setDestination] = useState("");
   const [date, setDate] = useState([
     {
       startDate: new Date(),
@@ -28,6 +30,8 @@ const Header = ({ type }) => {
     room: 1,
   });
 
+  const navigate = useNavigate();
+
   const handleOption = (name, operation) => {
     setOptions((prev) => {
       return {
@@ -36,9 +40,18 @@ const Header = ({ type }) => {
       };
     });
   };
+
+  const handleSearch = () => {
+    navigate("/hotels", { state: { destination, date, options } });
+  };
+
   return (
     <div className="header">
-      <div className={type === "list" ? "headerContainer listMode": "headerContainer"}>
+      <div
+        className={
+          type === "list" ? "headerContainer listMode" : "headerContainer"
+        }
+      >
         <div className="headerList">
           <div className="headerListItem active">
             <div className="headerListItem"> </div>
@@ -62,18 +75,23 @@ const Header = ({ type }) => {
             <span>Airport taxis</span>
           </div>
         </div>
-        { type !=="list" && 
+        {type !== "list" && (
           <>
             <h1 className="headerTitle">
               A lifetime of discounts? It's Genius.
             </h1>
-            <p className="headerDesc">Hello Get rewwards</p>
+            <p className="headerDesc">Hello Get rewards</p>
             <button className="headerBtn">Sign in / Register</button>
 
-            <div className="headerSearch">
+                <div className="headerSearch">
               <div className="headerSearchItem">
                 <FontAwesomeIcon icon={faPerson} className="headerIcon" />
-                <span className="headerSearchText">2 Hoang 1 Thu </span>
+                <input
+                  type="text"
+                  placeholder="Where are you going"
+                  className="headerSearchInput"
+                  onChange={(e) => setDestination(e.target.value)}
+                />
               </div>
 
               <div className="headerSearchItem">
@@ -92,6 +110,7 @@ const Header = ({ type }) => {
                     moveRangeOnFirstSelection={false}
                     ranges={date}
                     className="date"
+                    minDate={new Date()}
                   />
                 )}
               </div>
@@ -101,7 +120,7 @@ const Header = ({ type }) => {
                   onClick={() => setOpenOptions(!openOptions)}
                   className="headerSearchText"
                 >{`${options.adult} adult ${options.children} children ${options.room} room`}</span>
-                {openOptions && ( 
+                {openOptions && (
                   <div className="options">
                     <div className="optionItem">
                       <span className="optionText">Adult</span>
@@ -171,11 +190,13 @@ const Header = ({ type }) => {
               </div>
 
               <div className="headerSearchItem">
-                <button className="heaederBtn">Search</button>
+                <button className="heaederBtn" onClick={handleSearch}>
+                  Search
+                </button>
               </div>
             </div>
           </>
-        }
+        )}
       </div>
     </div>
   );
